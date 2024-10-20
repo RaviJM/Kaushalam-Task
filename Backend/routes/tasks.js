@@ -15,36 +15,57 @@ router.get('/', async (req, res) => {
 
 // POST a new task
 router.post('/', async (req, res) => {
-  const task = new Task({
-    text: req.body.text
-  });
+    // Check if the text is empty or only whitespace
+    if (!req.body.text || req.body.text.trim().length === 0) {
+        return res.status(400).json({ message: "Task text cannot be empty" });
+    }
 
-  try {
-    const newTask = await task.save();
-    res.status(201).json(newTask);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+    const task = new Task({
+        text: req.body.text.trim() // Trim whitespace from the beginning and end
+    });
+
+    try {
+        const newTask = await task.save();
+        res.status(201).json(newTask);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
 });
 
-// PUT (update) a task
+// UPDATE a task
 router.put('/:id', async (req, res) => {
-  try {
-    const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ message: 'Task not found' });
-
-    if (req.body.text != null) {
-      task.text = req.body.text;
+    try {
+      const task = await Task.findById(req.params.id);
+      if (!task) return res.status(404).json({ message: 'Task not found' });
+  
+      let updatedFields = {};
+  
+      if (req.body.text !== undefined) {
+        const trimmedText = req.body.text.trim();
+        if (trimmedText.length === 0) {
+          return res.status(400).json({ message: "Task cannot be empty" });
+        }
+        updatedFields.text = trimmedText;
+      }
+  
+      if (req.body.completed !== undefined) {
+        updatedFields.completed = req.body.completed;
+      }
+  
+      // Only update and save if there are changes
+      if (Object.keys(updatedFields).length > 0) {
+        const updatedTask = await Task.findByIdAndUpdate(
+          req.params.id,
+          { $set: updatedFields },
+          { new: true, runValidators: true }
+        );
+        res.json(updatedTask);
+      } else {
+        res.status(400).json({ message: "No valid updates provided" });
+      }
+    } catch (err) {
+      res.status(400).json({ message: err.message });
     }
-    if (req.body.completed != null) {
-      task.completed = req.body.completed;
-    }
-
-    const updatedTask = await task.save();
-    res.json(updatedTask);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
 });
 
 // DELETE a task
