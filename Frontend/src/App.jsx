@@ -7,13 +7,15 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
 
+  const URI = `https://kaushalam-task-backend.onrender.com/`;
+
   useEffect(() => {
     fetchTasks();
   }, []);
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/tasks');
+      const response = await fetch(`${URI}api/tasks`);
       const data = await response.json();
       setTasks(data);
     } catch (error) {
@@ -23,7 +25,7 @@ function App() {
 
   const addTask = async (text) => {
     try {
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch(`${URI}api/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +46,7 @@ function App() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${id}`, {
+      const response = await fetch(`${URI}api/tasks/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +68,7 @@ function App() {
 
   const deleteTask = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/tasks/${id}`, {
+      await fetch(`${URI}api/tasks/${id}`, {
         method: 'DELETE',
       });
       setTasks(tasks.filter(task => task._id !== id));
