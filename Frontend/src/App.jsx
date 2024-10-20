@@ -76,11 +76,17 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <h1>Todo List</h1>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      <TaskForm onAddTask={addTask} />
-      <TaskList tasks={tasks} onUpdateTask={updateTask} onDeleteTask={deleteTask} />
+    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">Todo List</h1>
+        {error && <div className="mb-4 text-red-600 text-center">{error}</div>}
+        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+          <div className="p-6">
+            <TaskForm onAddTask={addTask} />
+          </div>
+          <TaskList tasks={tasks} onUpdateTask={updateTask} onDeleteTask={deleteTask} />
+        </div>
+      </div>
     </div>
   );
 }

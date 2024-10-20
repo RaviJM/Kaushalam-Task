@@ -4,7 +4,7 @@ import TaskItem from './TaskItem';
 
 function TaskList({ tasks, onUpdateTask, onDeleteTask }) {
   return (
-    <ul>
+    <ul className="divide-y divide-gray-200">
       {tasks.map(task => (
         <TaskItem
           key={task._id}
@@ -15,6 +15,7 @@ function TaskList({ tasks, onUpdateTask, onDeleteTask }) {
       ))}
     </ul>
   );
+
 }
 
 export default TaskList;
